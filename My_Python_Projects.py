@@ -364,7 +364,7 @@ print("*" * 20)
 # Alege o opțiune: 
 
 
-from colorama import init, Fore, Style
+from colorama import init, Fore
 
 # Inițializare colorama
 init(autoreset=True)
@@ -372,7 +372,7 @@ init(autoreset=True)
 # Coșul de cumpărături (inițial gol)
 cart = {}
 
-# Lista de produse adaugate in inventar si disponibile cu stoc
+# Lista de produse adăugate în inventar și disponibile cu stoc
 products = {}
 
 # Funcția pentru a introduce inventarul
@@ -391,14 +391,14 @@ def initialize_inventory():
             products[name] = {"price": price, "stock": stock}
             print(Fore.GREEN + f"Produsul {name} a fost adăugat cu succes!\n")
         except ValueError:
-            print(Fore.RED + "Date invalide! Introdu un pret și un stoc valide.")
+            print(Fore.RED + "Date invalide! Introdu un preț și un stoc valide.")
 
 # Funcția pentru a șterge sau modifica produse
 def modify_product():
     if not products:
         print(Fore.RED + "Nu sunt produse în inventar. Te rog să introduci inventarul mai întâi.")
         return
-
+    
     print(Fore.GREEN + "\nProduse disponibile:")
     for index, (product, info) in enumerate(products.items(), start=1):
         print(Fore.YELLOW + f"{index}. {product} - {info['price']} RON (Stoc: {info['stock']})")
@@ -408,14 +408,12 @@ def modify_product():
         return
 
     if product_name in products:
-        print(Fore.GREEN + f"Modifică produsul {product_name}:")
-        sub_option = input(Fore.YELLOW + "Vrei să modifici cantitatea sau pretul? (cantitate/pret): ").strip().lower()
-
+        sub_option = input(Fore.YELLOW + "Vrei să modifici cantitatea sau prețul? (cantitate/pret): ").strip().lower()
+        
         if sub_option == "cantitate":
             try:
-                quantity = int(input(Fore.YELLOW + f"Introdu cantitatea totală pe care vrei să o ai pentru {product_name}: "))
+                quantity = int(input(Fore.YELLOW + f"Introdu noua cantitate pentru {product_name}: "))
                 if quantity >= 0:
-                    # Actualizez stocul produsului direct la cantitatea introdusă
                     products[product_name]["stock"] = quantity
                     print(Fore.GREEN + f"Stocul pentru {product_name} a fost actualizat la {quantity}.")
                 else:
@@ -424,23 +422,23 @@ def modify_product():
                 print(Fore.RED + "Te rog să introduci o cantitate validă.")
         elif sub_option == "pret":
             try:
-                new_price = float(input(Fore.YELLOW + f"Introdu noul pret pentru {product_name}: "))
+                new_price = float(input(Fore.YELLOW + f"Introdu noul preț pentru {product_name}: "))
                 if new_price > 0:
                     products[product_name]["price"] = new_price
                     print(Fore.GREEN + f"Prețul pentru {product_name} a fost actualizat la {new_price} RON.")
                 else:
-                    print(Fore.RED + "Pretul nu poate fi mai mic de 0.")
+                    print(Fore.RED + "Prețul trebuie să fie pozitiv.")
             except ValueError:
-                print(Fore.RED + "Te rog să introduci un pret valid.")
+                print(Fore.RED + "Te rog să introduci un preț valid.")
         else:
-            print(Fore.RED + "Opțiune invalidă. Te rog să alegi 'cantitate' sau 'pret'.")
+            print(Fore.RED + "Opțiune invalidă.")
     else:
         print(Fore.RED + "Produsul nu există în inventar.")
 
 # Funcția pentru a vizualiza produsele disponibile
 def show_products():
     if not products:
-        print(Fore.RED + "Nu sunt produse în inventar. Te rog să introduci inventarul mai întâi.")
+        print(Fore.RED + "Nu sunt produse în inventar.")
         return
     
     print(Fore.GREEN + "\nProduse disponibile:")
@@ -450,7 +448,7 @@ def show_products():
 # Funcția pentru a adăuga produse în coș
 def add_to_cart():
     if not products:
-        print(Fore.RED + "Nu sunt produse în inventar. Te rog să introduci inventarul mai întâi.")
+        print(Fore.RED + "Nu sunt produse în inventar.")
         return
     
     show_products()
@@ -460,76 +458,45 @@ def add_to_cart():
         if 1 <= choice <= len(products):
             product_name = list(products.keys())[choice - 1]
             quantity = int(input(Fore.YELLOW + f"Câte {product_name} vrei să adaugi în coș? "))
-
-            # Verificăm dacă există suficiente produse în stoc
             if quantity <= products[product_name]["stock"]:
-                if product_name in cart:
-                    cart[product_name] += quantity
-                else:
-                    cart[product_name] = quantity
-
-                # Scădem cantitatea din stoc
+                cart[product_name] = cart.get(product_name, 0) + quantity
                 products[product_name]["stock"] -= quantity
-                print(Fore.GREEN + f"Produsul {product_name} a fost adăugat în coș!")
+                print(Fore.GREEN + f"{quantity} bucăți din {product_name} au fost adăugate în coș!")
             else:
-                print(Fore.RED + f"Nu sunt suficiente produse în stoc pentru {product_name}. Mai sunt doar {products[product_name]['stock']} disponibile.")
+                print(Fore.RED + "Stoc insuficient.")
         else:
             print(Fore.RED + "Opțiune invalidă.")
     except ValueError:
         print(Fore.RED + "Te rog să introduci un număr valid.")
 
-# Funcția pentru a vizualiza coșul de cumpărături
-def view_cart():
-    if cart:
-        print(Fore.GREEN + "\nCoșul tău de cumpărături:")
-        total_price = 0
-        for product, quantity in cart.items():
-            price = products[product]["price"]
-            total_price += price * quantity
-            print(Fore.YELLOW + f"{product} - {quantity} x {price} RON")
-        print(Fore.YELLOW + f"\nTotal: {total_price} RON")
-    else:
-        print(Fore.RED + "Coșul tău este gol.")
-
-# Funcția pentru a finaliza comanda
-def checkout():
-    if cart:
-        print(Fore.GREEN + "\nMulțumim pentru cumpărături!")
-        total_price = 0
-        for product, quantity in cart.items():
-            price = products[product]["price"]
-            total_price += price * quantity
-            print(Fore.YELLOW + f"{product} - {quantity} x {price} RON")
-        print(Fore.YELLOW + f"\nTotal de plată: {total_price} RON")
-
-        # Golește coșul după ce comanda este finalizată
-        cart.clear()
-        print(Fore.GREEN + "\nComanda a fost finalizată. La revedere!")
-    else:
-        print(Fore.RED + "Coșul este gol. Nu poți finaliza comanda fără produse.")
-
-# Funcția care arată meniul principal
-def show_menu():
-    print(Fore.YELLOW + "\n--------------------------------------")
-    print(Fore.YELLOW + "          Meniu Magazin")
-    print(Fore.YELLOW + "--------------------------------------")
-    print(Fore.GREEN + "1. Introdu inventarul")
-    print(Fore.GREEN + "2. Șterge sau modifică produs din inventar")
-    print(Fore.GREEN + "3. Vizualizează produse")
-    print(Fore.GREEN + "4. Adaugă produs în coș")
-    print(Fore.GREEN + "5. Vizualizează coșul")
-    print(Fore.GREEN + "6. Finalizează comanda")
-    print(Fore.GREEN + "7. Ieși")
-    print(Fore.YELLOW + "--------------------------------------")
+# Funcția pentru a șterge produse din coș
+def remove_from_cart():
+    if not cart:
+        print(Fore.RED + "Coșul este gol.")
+        return
+    
+    print(Fore.GREEN + "\nProduse în coș:")
+    for index, (product, quantity) in enumerate(cart.items(), start=1):
+        print(Fore.YELLOW + f"{index}. {product} - {quantity} bucăți")
+    
+    try:
+        choice = int(input(Fore.YELLOW + "\nAlege numărul produsului de eliminat: "))
+        product_name = list(cart.keys())[choice - 1]
+        remove_quantity = int(input(Fore.YELLOW + f"Câte bucăți să șterg? (0 pentru a renunța): "))
+        if remove_quantity >= cart[product_name]:
+            products[product_name]["stock"] += cart.pop(product_name)
+        else:
+            cart[product_name] -= remove_quantity
+            products[product_name]["stock"] += remove_quantity
+    except:
+        print(Fore.RED + "Eroare la eliminare.")
 
 # Funcția principală
 def main():
     while True:
-        show_menu()
-
+        print(Fore.YELLOW + "\n1. Introdu inventarul\n2. Modifică produs\n3. Vizualizează produse\n4. Adaugă produs în coș\n5. Șterge produs din coș\n6. Ieși")
         try:
-            option = int(input(Fore.YELLOW + "Alege o opțiune: "))
-
+            option = int(input(Fore.YELLOW + "Alege: "))
             if option == 1:
                 initialize_inventory()
             elif option == 2:
@@ -539,20 +506,17 @@ def main():
             elif option == 4:
                 add_to_cart()
             elif option == 5:
-                view_cart()
+                remove_from_cart()
             elif option == 6:
-                checkout()
-                break  # După ce finalizăm comanda, ieșim din aplicație
-            elif option == 7:
-                print(Fore.GREEN + "Ieșire din aplicație. La revedere!")
+                print(Fore.GREEN + "La revedere!")
                 break
-            else:
-                print(Fore.RED + "Opțiune invalidă. Te rog să alegi 1, 2, 3, 4, 5, 6 sau 7.")
-        except ValueError:
-            print(Fore.RED + "Te rog să introduci un număr valid.\n")
-
+        except:
+            print(Fore.RED + "Opțiune invalidă.")
 
 if __name__ == "__main__":
     main()
 
+
 print("*" * 20)
+
+
