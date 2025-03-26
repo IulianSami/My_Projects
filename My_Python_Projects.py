@@ -1,30 +1,68 @@
-# My_Python_Projects
+# 💻 My_Python_Projects
 
-#1.    Digital watch :
+#1. 🕒   Digital watch with alarm :
 
 import tkinter as tk
 from time import strftime
+import threading
+import time
+from termcolor import colored  # Importăm termcolor pentru a schimba culoarea textului
 
+# Fereastra pentru ceas
 root = tk.Tk()
-root.title('Digital Clock')
+root.title('Digital Clock with Alarm')
 
-# Define the clock label
+# Eticheta pentru ceas
 clock_label = tk.Label(root, font=('Helvetica', 48), bg='black', fg='cyan')
 clock_label.pack(anchor='center', fill='both', expand=True)
 
-# Function to update time
+# Variabila care va ține ora alarmei
+alarm_time = None
+
+# Funcția care actualizează timpul pe ceas
 def update_time():
-    current_time = strftime('%H:%M:%S')
-    clock_label.config(text=current_time)
-    clock_label.after(1000, update_time)  # Pass the function reference without parentheses
+    current_time = strftime('%H:%M:%S')  # Obține ora curentă
+    clock_label.config(text=current_time)  # Actualizează ceasul
+
+    # Verifică dacă ora curentă corespunde cu ora alarmei
+    if alarm_time and current_time[:5] == alarm_time:
+        print(colored(f"A sunat alarma la {alarm_time}!", 'red'))  # Afișează mesajul roșu în consolă
+        
+    clock_label.after(1000, update_time)  # Actualizează ceasul la fiecare secundă
+
+# Funcția pentru setarea alarmei
+def set_alarm():
+    global alarm_time
+    alarm_input = input("Setează ora alarmei (format HH:MM): ")
+
+    try:
+        # Verifică dacă inputul este într-un format corect
+        time.strptime(alarm_input, '%H:%M')  # Verifică dacă formatul e corect
+        alarm_time = alarm_input  # Salvează ora alarmei
+        print(f"Alarma este setată la: {alarm_time}")
+    except ValueError:
+        print("Format invalid. Te rog să introduci ora în formatul HH:MM.")
+
+# Setează alarma într-un thread separat
+def alarm_thread_function():
+    while True:
+        set_alarm()
+        time.sleep(1)  # Evită blocarea programului
+
+# Pornește funcția de actualizare a timpului și setarea alarmei în paralel
+thread = threading.Thread(target=alarm_thread_function)
+thread.daemon = True
+thread.start()
 
 update_time()
+
 root.mainloop()
+
 
 print("&" * 20)
 
 
-#2:    Create map / search location using  Python:
+#2.  🗺️  Create map / search location using  Python:
 
 import folium
 from geopy.geocoders import Nominatim
@@ -55,7 +93,7 @@ else:
 print("&" * 20)
 
 
-#3:    Python code for PASCAL's TRIANGLE:
+#3.  🔺  Python code for PASCAL's TRIANGLE:
 
 def printPascal(N):
     arr = [1]  # Initialize the first row
@@ -84,7 +122,7 @@ printPascal(N)
 print("&" * 20)
 
 
-#4:    Myanmar flag using Python:
+#4.  🏳️‍🌈  Myanmar flag using Python:
 
 import matplotlib.pyplot as plt
 from matplotlib.patches import Polygon
@@ -116,7 +154,7 @@ print("Happy independence Day Myanmar! ")
 print("&" * 20)
 
 
-#5:    Romanian flag using Python:
+#5.   🟦🟨🟥  Romanian flag using Python:
 
 import matplotlib.pyplot as plt
 
@@ -148,7 +186,7 @@ print("&" * 20)
 
 
 
-#6.    CONVERSION PDF TO WORD
+#6.  📄➡️📝  CONVERSION PDF TO WORD
 
 
 import os
@@ -202,7 +240,7 @@ print("&" * 20)
 
 
 
-#7.    IP Adress Information Using Python:
+#7.  🌍📡🔍  IP Adress Information Using Python:
 
 #Without VPN  
 
@@ -262,7 +300,7 @@ while True:
 
 print("&" * 20)
 
-8.    #Alegere parola random (cel putin :2 litere mici, 2 litere mari, 2 simboluri, 2 numere) si cu verificare complexitate:
+#8.  🔑🔐  Alegere parola random (cel putin :2 litere mici, 2 litere mari, 2 simboluri, 2 numere) si cu verificare complexitate:
 
 import random
 import string
@@ -310,7 +348,7 @@ else:
 print("*" * 20)
 
 
-#9.  Meniu magazin cu introducere articole in inventar, modificare inventar si cumparare.
+#9. 🛍️🏷️🛒  Meniu magazin cu introducere articole in inventar, modificare inventar si cumparare.
   
 # --------------------------------------
 #           Meniu Magazin
@@ -513,7 +551,7 @@ def main():
         except ValueError:
             print(Fore.RED + "Te rog să introduci un număr valid.\n")
 
-# Rulează aplicația
+
 if __name__ == "__main__":
     main()
 
