@@ -6,7 +6,7 @@ import tkinter as tk
 from time import strftime
 import threading
 import time
-from termcolor import colored  # Importăm termcolor pentru a schimba culoarea textului
+from termcolor import colored  
 
 # Fereastra pentru ceas
 root = tk.Tk()
